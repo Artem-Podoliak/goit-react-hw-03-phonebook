@@ -4,13 +4,31 @@ import contactListTest from '../data/contactListTest.json';
 import ContactForm from './ContactForm/ContactForm';
 import ContactList from './ContactList/ContactList';
 import Filter from './Filter/Filter';
-import css from './App.module.css'
+import css from './App.module.css';
 
 class App extends React.Component {
   state = {
-    contacts: contactListTest,
+    contacts: [],
     filter: '',
   };
+
+  componentDidMount() {
+    const contacts = localStorage.getItem('contacts');
+    const parsedContacts = JSON.parse(contacts);
+
+    if (parsedContacts) {
+      this.setState({ contacts: parsedContacts });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const nextContacts = this.state.contacts;
+    const prevContacts = prevState.contacts;
+
+    if (nextContacts !== prevContacts) {
+      localStorage.setItem('contacts', JSON.stringify(nextContacts));
+    }
+  }
 
   addContact = ({ name, number }) => {
     const contact = {
